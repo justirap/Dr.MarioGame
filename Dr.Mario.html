@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dr. Mario</title>
+
+<style> 
+
+#tabela{
+    border-spacing: 0;
+    border:1px solid black; 
+    position: relative;
+    left: 270px;
+    top: 90px;
+}
+
+td {
+      width: 14px;
+      height: 14px;
+      }
+
+#plansza{
+    width: 640px;
+    height: 384px;
+    background-image: url("img/pf.png");
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+
+}
+
+#END{
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url('img/sc.png');
+    bottom: 100px;
+
+}
+
+#GO{
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url('img/go.png');
+    bottom: 100px;
+    
+}
+
+#GOdr{
+    position: relative;
+    margin-left: auto;
+    margin-right: 43px;
+    bottom: 351px;
+    background-image: url('img/go_dr.png');
+  
+}
+
+
+#cyfra0{
+    background-image: url('img/cyfry/0.png');
+    position: relative;
+    left:142px;
+    bottom:180px;
+}
+#cyfra1{
+    background-image: url('img/cyfry/1.png');
+    position: relative;
+    left:142px;
+    bottom:180px;
+}
+
+#cyfra2{
+    background-image: url('img/cyfry/2.png');
+    position: relative;
+    left:142px;
+    bottom:180px;
+}
+
+#cyfra3{
+    background-image: url('img/cyfry/3.png');
+    position: relative;
+    left:142px;
+    bottom:180px;
+}
+
+#cyfra4{
+    background-image: url('img/cyfry/4.png');
+    position: relative;
+    left:142px;
+    bottom:180px;
+}
+
+</style>
+
+<body>
+<div id="plansza">
+<table id="tabela"></table>
+</div>
+
+<script>
+    "use strict";
+    var liczba1;
+    var liczba2;
+    var warunek;
+    var x=0;
+    var y=4;
+    var gra;
+    var pion=1;
+    var shift=1;
+    var wspolrzedneX=[];
+    var wspolrzedneY=[];
+    var cyfra;
+    var liczba3;
+    var liczba4;
+    var pol1;
+    var pol2;
+    var kolor;
+    var score=0;
+    var rekord=window.localStorage.getItem("rekord");
+    console.log(rekord);
+
+    var punkty=document.createElement("div");
+    punkty.style.height="18px";
+    punkty.style.width="18px";
+
+    var wirusy=document.createElement("div");
+    wirusy.style.height="18px";
+    wirusy.style.width="18px";
+
+    var wygrana=document.createElement("div");
+        wygrana.id="END";
+        wygrana.style.width="423px";
+        wygrana.style.height="119px";
+    
+        var obrazek=document.createElement("div");
+            obrazek.style.height="18px";
+            obrazek.style.width="18px";
+
+    if(rekord!=null){
+            
+        if(window.localStorage.getItem("rekord")=='400'){
+            obrazek.id="cyfra4";
+        }
+
+        else if(window.localStorage.getItem("rekord")=='300'){
+            obrazek.id="cyfra3";
+        }
+
+        else if(window.localStorage.getItem("rekord")=='200'){
+            obrazek.id="cyfra2";
+        }
+
+        else if(window.localStorage.getItem("rekord")=='100'){
+            obrazek.id="cyfra1";
+        }
+        document.getElementById("plansza").appendChild(obrazek);
+    }
+    else
+    {
+        obrazek.id="cyfra0";
+        document.getElementById("plansza").appendChild(obrazek);
+    }
+
+var tablica = [];
+for (var i = 0; i < 16; i++) {
+            tablica[i] = [];
+        }
+for (var i = 0; i < 16; i++) {
+            for (var j = 0; j <10; j++) {
+                tablica[i][j] = "0";
+            }
+        }
+
+for (var i=0; i<16; i++){
+    tablica[i][0]="k";
+}
+for (var i=0; i<16; i++){
+    tablica[i][9]="k";
+}
+
+plansza(tablica);
+losujWirusy();
+losuj();
+console.log(tablica);
+Gra();
+
+window.addEventListener('keydown', strzalki);
+
+function strzalki (event) {
+  switch (event.keyCode) {
+
+    // GÓRA
+    case 38:
+    if(pion%2!=0){
+    if(tablica[x][y+1]==liczba2.toString()){
+    tablica[x][y+1]="0";
+    tablica[x-1][y]=liczba2.toString();
+    plansza(tablica);
+    pion++;
+    }
+    else{
+    tablica[x][y+1]="0";
+    tablica[x-1][y]=liczba1.toString();
+    plansza(tablica);
+    pion++;
+    }
+    }
+    else{
+        if(y==8){
+        if(tablica[x-1][y]==liczba1.toString()){
+        tablica[x-1][y]="0";
+        tablica[x][y]="0";
+        tablica[x][y-1]=liczba1.toString(); 
+        tablica[x][y]=liczba2.toString();
+         y--;
+         pion++;
+        plansza(tablica);   
+        }
+        else
+        {
+        tablica[x-1][y]="0";
+        tablica[x][y]="0";
+        tablica[x][y-1]=liczba2.toString(); 
+        tablica[x][y]=liczba1.toString();
+         y--;
+         pion++;
+         plansza(tablica); 
+        }        
+        }
+        else{
+    if(tablica[x-1][y]==liczba1.toString()){
+    tablica[x-1][y]="0";
+    tablica[x][y+1]=liczba2.toString();
+    tablica[x][y]=liczba1.toString();
+    plansza(tablica);
+    pion++;
+    }
+    else{
+    tablica[x-1][y]="0";
+    tablica[x][y+1]=liczba1.toString();
+    tablica[x][y]=liczba2.toString();
+    plansza(tablica);
+    pion++;
+    }
+    }
+    }
+    break;
+
+    //SHIFT
+    case 16:
+    if(pion%2!=0 && shift%2!=0){
+    if(tablica[x][y+1]==liczba1.toString()){
+    tablica[x][y+1]="0";
+    tablica[x-1][y]=liczba2.toString();
+    tablica[x][y]=liczba1.toString();
+    plansza(tablica);
+    pion++;
+    shift++;
+    }
+    else{
+    tablica[x][y+1]="0";
+    tablica[x-1][y]=liczba1.toString();
+    tablica[x][y]=liczba2.toString();
+    plansza(tablica);
+    pion++;
+    shift++;
+    }
+    }
+    else{
+        if(y==8){
+        if(tablica[x-1][y]==liczba1.toString()){
+        tablica[x-1][y]="0";
+        tablica[x][y]="0";
+        tablica[x][y-1]=liczba2.toString(); 
+        tablica[x][y]=liczba1.toString();
+         y--;
+         pion++;
+         shift++;
+        plansza(tablica);   
+        }
+        else{
+        tablica[x-1][y]="0";
+        tablica[x][y]="0";
+        tablica[x][y-1]=liczba1.toString(); 
+        tablica[x][y]=liczba2.toString();
+         y--;
+         pion++;
+         shift++;
+        plansza(tablica);   
+        }        
+        }
+        else{
+    if(shift%2==0){
+    if(tablica[x-1][y]==liczba2.toString()){
+    tablica[x-1][y]="0";
+    tablica[x][y+1]=liczba2.toString();
+    tablica[x][y]=liczba1.toString();
+    plansza(tablica);
+    pion++;
+    shift++;
+    }
+    else{
+    tablica[x-1][y]="0";
+    tablica[x][y+1]=liczba1.toString();
+    tablica[x][y]=liczba2.toString();
+    plansza(tablica);
+    pion++;
+    shift++;
+    }
+    }
+    }
+    }
+    break;
+    
+
+    //LEWO
+    case 37: 
+    if(pion%2!=0){
+    if(tablica[x][y-1]!="k" && tablica[x][y-1]=="0"){
+    if( tablica[x][y]==liczba1.toString()){
+    tablica[x][y]="0";
+    tablica[x][y+1]="0";
+     y--;
+    tablica[x][y]=liczba1.toString();
+    tablica[x][y+1]=liczba2.toString();
+    plansza(tablica);
+    }
+    else{
+    tablica[x][y]="0";
+    tablica[x][y+1]="0";
+     y--;
+    tablica[x][y]=liczba2.toString();
+    tablica[x][y+1]=liczba1.toString();
+    plansza(tablica);
+    }
+    }
+    }
+    else{
+    if(tablica[x][y-1]!="k" && tablica[x][y-1]=="0" && tablica[x-1][y-1]=="0"){
+    if(tablica[x][y]==liczba2.toString()){
+    tablica[x][y]="0";
+    tablica[x-1][y]="0";
+     y--;
+    tablica[x-1][y]=liczba1.toString();
+    tablica[x][y]=liczba2.toString();
+    plansza(tablica);
+    }
+    else{
+    tablica[x][y]="0";
+    tablica[x-1][y]="0";
+     y--;
+    tablica[x-1][y]=liczba2.toString();
+    tablica[x][y]=liczba1.toString();
+    plansza(tablica);
+    }
+        }
+    }
+    break;
+ 
+
+    //PRAWO
+    case 39:
+    if(pion%2!=0){
+    if(tablica[x][y+2]!="k" && tablica[x][y+2]=="0"){
+    if(tablica[x][y]==liczba1.toString()){
+    tablica[x][y]="0";
+    tablica[x][y+2]="0";
+    y++;
+    tablica[x][y]=liczba1.toString();
+    tablica[x][y+1]=liczba2.toString();
+    plansza(tablica);
+    }
+    else{
+    tablica[x][y]="0";
+    tablica[x][y+2]="0";
+    y++;
+    tablica[x][y]=liczba2.toString();
+    tablica[x][y+1]=liczba1.toString();
+    plansza(tablica); 
+    }
+    }
+    }
+    else{
+        if(tablica[x][y+1]!="k" && tablica[x][y+1]=="0" && tablica[x-1][y+1]=="0"){
+            if(tablica[x][y]==liczba2.toString()){
+            tablica[x][y]="0";
+            tablica[x-1][y]="0";
+            y++;
+            tablica[x-1][y]=liczba1.toString();
+            tablica[x][y]=liczba2.toString();
+            plansza(tablica);
+        }
+        else{
+            tablica[x][y]="0";
+            tablica[x-1][y]="0";
+            y++;
+            tablica[x-1][y]=liczba2.toString();
+            tablica[x][y]=liczba1.toString();
+            plansza(tablica);
+        }
+    }
+    }
+    break;
+ 
+
+    //DOL
+    case 40: 
+    clearInterval(gra);
+    window.removeEventListener('keydown', strzalki);
+    var szybka= setInterval(() => {
+        if(pion%2!=0 && shift%2!=0){
+        if(tablica[x+1][y]!="0"||tablica[x+1][y+1]!="0"){
+        clearInterval(szybka);
+        window.addEventListener('keydown', strzalki);
+        losuj();
+        x=0;
+        y=4;
+        Gra();
+        }
+    }
+        else{
+            if(tablica[x+1][y]!="0"){
+            clearInterval(szybka);
+            window.addEventListener('keydown', strzalki);
+            losuj();
+            x=0;
+            y=4;
+            pion++;
+            if(shift%2==0){
+            shift++;
+            }
+            Gra();
+            }
+        }
+
+        if(shift%2==0){
+            warunek=false; 
+            if(tablica[x-1][y]==liczba1.toString()){
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba1.toString();
+            x++;
+            tablica[x][y]=liczba2.toString();
+            plansza(tablica);
+            }
+            else{
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba2.toString();
+            x++;
+            tablica[x][y]=liczba1.toString();
+            plansza(tablica);
+            }
+        }
+
+        if(pion%2!=0 && shift%2!=0){
+        warunek=false;  
+        if(tablica[x][y]==liczba1.toString()){
+        tablica[x][y]="0";
+        tablica[x][y+1]="0";
+        x++;
+        tablica[x][y]=liczba1.toString();
+        tablica[x][y+1]=liczba2.toString();
+        plansza(tablica);
+        }
+        else{
+        tablica[x][y]="0";
+        tablica[x][y+1]="0";
+        x++;
+        tablica[x][y]=liczba2.toString();
+        tablica[x][y+1]=liczba1.toString();
+        plansza(tablica);
+        }
+        } 
+        else{
+            if(shift%2!=0){
+            warunek=false; 
+            if(tablica[x-1][y]==liczba2.toString()){
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba2.toString();
+            x++;
+            tablica[x][y]=liczba1.toString();
+            plansza(tablica);
+            }
+            else{
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba1.toString();
+            x++;
+            tablica[x][y]=liczba2.toString();
+            plansza(tablica);
+            }
+            }
+        }
+        if (warunek==true || x==15){
+            clearInterval(szybka);
+            window.addEventListener('keydown', strzalki);
+            losuj();
+            if(pion%2==0){
+            pion++;
+            }
+            if(shift%2==0){
+            shift++;
+            }
+            x=0;
+            y=4;
+            Gra();
+            
+        }
+    }, 50);
+    break;
+  }
+}
+
+
+function Gra(){    
+    
+  zbijanie();  
+
+    gra = setInterval(() => {
+        plansza(tablica);
+        if(pion%2!=0){
+        if(tablica[x+1][y]!="0"||tablica[x+1][y+1]!="0"){
+        clearInterval(gra);
+        x=0;
+        y=4;
+        losuj();      
+        Gra();
+        if(score==400){  
+        clearInterval(gra);
+        }
+        if(tablica[1][4]!="0"){
+        clearInterval(gra);
+        console.log("KONIEC");
+        var koniec=document.createElement("div");
+        koniec.id="GO";
+        koniec.style.width="334px";
+        koniec.style.height="119px";
+        document.getElementById("plansza").appendChild(koniec);
+        var koniecDR=document.createElement("div");
+        koniecDR.id="GOdr";
+        koniecDR.style.width="127px";
+        koniecDR.style.height="126px";
+        document.getElementById("plansza").appendChild(koniecDR);
+        if(rekord<score){
+            rekord=score;
+            window.localStorage.setItem('rekord',score);
+        }
+    }
+        }
+    
+    }
+        else{
+        if(tablica[x+1][y]!="0"){
+        clearInterval(gra);
+        x=0;
+        y=4;
+        losuj(); 
+        pion++;
+        if(shift%2==0){
+        shift++;  
+        } 
+          
+        Gra();
+        if(score==400){  
+        clearInterval(gra);
+        }
+        if(tablica[1][4]!="0"){
+        clearInterval(gra);
+        console.log("KONIEC");
+        var koniec=document.createElement("div");
+        koniec.id="GO";
+        koniec.style.width="334px";
+        koniec.style.height="119px";
+        document.getElementById("plansza").appendChild(koniec);
+        var koniecDR=document.createElement("div");
+        koniecDR.id="GOdr";
+        koniecDR.style.width="127px";
+        koniecDR.style.height="126px";
+        document.getElementById("plansza").appendChild(koniecDR);
+    }
+        }
+
+        }
+
+        if(shift%2==0){
+            warunek=false; 
+            if(tablica[x-1][y]==liczba1.toString()){
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba1.toString();
+            x++;
+            tablica[x][y]=liczba2.toString();
+            plansza(tablica);
+            }
+            else{
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba2.toString();
+            x++;
+            tablica[x][y]=liczba1.toString();
+            plansza(tablica);
+            }
+
+            if (warunek==true || x==15){
+            clearInterval(gra);
+            x=0;
+            y=4;
+            losuj();
+            pion++;
+            shift++;
+            Gra();
+            if(score==400){  
+        clearInterval(gra);
+        }
+            if(tablica[1][4]!="0"){
+        clearInterval(gra);
+        console.log("KONIEC");
+        var koniec=document.createElement("div");
+        koniec.id="GO";
+        koniec.style.width="334px";
+        koniec.style.height="119px";
+        document.getElementById("plansza").appendChild(koniec);
+        var koniecDR=document.createElement("div");
+        koniecDR.id="GOdr";
+        koniecDR.style.width="127px";
+        koniecDR.style.height="126px";
+        document.getElementById("plansza").appendChild(koniecDR);
+    }
+        }
+
+        }
+
+        if(pion%2!=0 && shift%2!=0){
+        warunek=false;  
+        if(tablica[x][y]==liczba1.toString()){
+        tablica[x][y]="0";
+        tablica[x][y+1]="0";
+        x++;
+        tablica[x][y]=liczba1.toString();
+        tablica[x][y+1]=liczba2.toString();
+        plansza(tablica);
+        }
+        else{
+        if(tablica[x][y]==liczba2.toString()){
+        tablica[x][y]="0";
+        tablica[x][y+1]="0";
+        x++;
+        tablica[x][y]=liczba2.toString();
+        tablica[x][y+1]=liczba1.toString();
+        plansza(tablica);
+        }
+        else{
+        tablica[x][y]="0";
+        tablica[x][y+1]="0";
+        x++;
+        tablica[x][y]=liczba1.toString();
+        tablica[x][y+1]=liczba2.toString();
+        plansza(tablica);
+
+        }
+
+        }
+
+        if (warunek==true || x==15){
+            clearInterval(gra);
+            x=0;
+            y=4;
+            losuj();
+            Gra();
+            if(tablica[1][4]!="0"){
+        clearInterval(gra);
+        console.log("KONIEC");
+        var koniec=document.createElement("div");
+        koniec.id="GO";
+        koniec.style.width="334px";
+        koniec.style.height="119px";
+        document.getElementById("plansza").appendChild(koniec);
+        var koniecDR=document.createElement("div");
+        koniecDR.id="GOdr";
+        koniecDR.style.width="127px";
+        koniecDR.style.height="126px";
+        document.getElementById("plansza").appendChild(koniecDR);
+    }
+        }
+        }
+        else{
+            if(shift%2!=0){
+            warunek=false;
+            if(tablica[x-1][y]==liczba2.toString()){
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba2.toString();
+            x++;
+            tablica[x][y]=liczba1.toString();
+            plansza(tablica);
+            }
+            else{
+            tablica[x-1][y]="0";
+            tablica[x][y]=liczba1.toString();
+            x++;
+            tablica[x][y]=liczba2.toString();
+            plansza(tablica);
+
+            }
+            if (warunek==true || x==15){
+            clearInterval(gra);
+            x=0;
+            y=4;
+            losuj();
+            pion++;
+            Gra();
+            if(tablica[1][4]!="0"){
+        clearInterval(gra);
+        console.log("KONIEC");
+        var koniec=document.createElement("div");
+        koniec.id="GO";
+        koniec.style.width="334px";
+        koniec.style.height="119px";
+        document.getElementById("plansza").appendChild(koniec);
+        var koniecDR=document.createElement("div");
+        koniecDR.id="GOdr";
+        koniecDR.style.width="127px";
+        koniecDR.style.height="126px";
+        document.getElementById("plansza").appendChild(koniecDR);
+    }
+        }
+        }
+        }      
+       
+    }, 500);
+}
+
+
+function zbijanie(){
+    
+    for(let i=15; i>0; i--){
+        for(let j=1; j<9; j++){
+            cyfra=tablica[i][j];
+            if(cyfra=="4"){
+                cyfra="1";
+            }
+            if(cyfra=="5"){
+                cyfra="2";
+            }
+            if(cyfra=="6"){
+                cyfra="3";
+            }
+            if(cyfra!="0"){
+            if(cyfra=="1"||cyfra=="2"||cyfra=="3"){
+            if((tablica[i][j]==cyfra||tablica[i][j].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+1]==cyfra||tablica[i][j+1].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+2]==cyfra||tablica[i][j+2].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+3]==cyfra||tablica[i][j+3].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+4]==cyfra||tablica[i][j+4].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+5]== cyfra||tablica[i][j+5].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+6]==cyfra||tablica[i][j+6].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=0; x<7;x++){
+                    wspolrzedneX.push(i);
+                    wspolrzedneY.push(j+x);
+                }         
+            }
+
+           else if((tablica[i][j]==cyfra||tablica[i][j].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+1]==cyfra||tablica[i][j+1].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+2]==cyfra||tablica[i][j+2].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+3]==cyfra||tablica[i][j+3].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+4]==cyfra||tablica[i][j+4].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+5]== cyfra||tablica[i][j+5].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=0; x<6; x++){
+                    wspolrzedneX.push(i);
+                    wspolrzedneY.push(j+x);
+                }         
+            }
+
+           else if((tablica[i][j]==cyfra||tablica[i][j].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+1]==cyfra||tablica[i][j+1].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+2]==cyfra||tablica[i][j+2].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+3]==cyfra||tablica[i][j+3].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+4]==cyfra||tablica[i][j+4].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=0; x<5; x++){
+                    wspolrzedneX.push(i);
+                    wspolrzedneY.push(j+x);
+                }         
+            }
+
+           else if((tablica[i][j]==cyfra||tablica[i][j].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+1]==cyfra||tablica[i][j+1].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+2]==cyfra||tablica[i][j+2].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[i][j+3]==cyfra||tablica[i][j+3].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=0; x<4; x++){
+                    wspolrzedneX.push(i);
+                    wspolrzedneY.push(j+x);
+                }         
+            }          
+        }
+        }
+    }
+    }
+
+    for(let k=1; k<9; k++){
+        for(let l=15; l>4; l--){
+            cyfra=tablica[l][k];
+            if(cyfra=="4"){
+                cyfra="1";
+            }
+            if(cyfra=="5"){
+                cyfra="2";
+            }
+            if(cyfra=="6"){
+                cyfra="3";
+            }
+            if(cyfra!="0"){
+            if(cyfra=="1"||cyfra=="2"||cyfra=="3"){
+
+            if((tablica[l][k]==cyfra||tablica[l][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-1][k]==cyfra||tablica[l-1][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-2][k]==cyfra||tablica[l-2][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-3][k]==cyfra||tablica[l-3][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-4][k]==cyfra||tablica[l-4][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-5][k]== cyfra||tablica[l-5][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-6][k]==cyfra||tablica[l-6][k].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=7; x>0 ;x--){
+                    wspolrzedneX.push(l-x+1);
+                    wspolrzedneY.push(k);
+                }         
+            }
+            else if((tablica[l][k]==cyfra||tablica[l][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-1][k]==cyfra||tablica[l-1][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-2][k]==cyfra||tablica[l-2][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-3][k]==cyfra||tablica[l-3][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-4][k]==cyfra||tablica[l-4][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-5][k]== cyfra||tablica[l-5][k].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=6; x>0; x--){
+                    wspolrzedneX.push(l-x+1);
+                    wspolrzedneY.push(k);
+                }         
+            }
+            else if((tablica[l][k]==cyfra||tablica[l][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-1][k]==cyfra||tablica[l-1][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-2][k]==cyfra||tablica[l-2][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-3][k]==cyfra||tablica[l-3][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-4][k]==cyfra||tablica[l-4][k].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=5; x>0;x--){
+                    wspolrzedneX.push(l-x+1);
+                    wspolrzedneY.push(k);
+                }         
+            }
+            else if((tablica[l][k]==cyfra||tablica[l][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-1][k]==cyfra||tablica[l-1][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-2][k]==cyfra||tablica[l-2][k].charCodeAt(0)-3==cyfra.charCodeAt(0)) && (tablica[l-3][k]==cyfra||tablica[l-3][k].charCodeAt(0)-3==cyfra.charCodeAt(0))){
+                for(let x=4; x>0; x--){
+                    wspolrzedneX.push(l-x+1);
+                    wspolrzedneY.push(k);
+                }         
+            }
+     
+        }
+
+        }
+    }
+}
+
+for(let i=0;i<wspolrzedneX.length;i++){
+    liczba3=wspolrzedneX[i];
+    liczba4=wspolrzedneY[i];
+    if(tablica[liczba3][liczba4]=="1"){
+        tablica[liczba3][liczba4]="7";
+    }
+    else if(tablica[liczba3][liczba4]=="2"){
+        tablica[liczba3][liczba4]="8";
+    }
+
+    else if(tablica[liczba3][liczba4]=="3"){
+        tablica[liczba3][liczba4]="9";
+    }
+
+    else if(tablica[liczba3][liczba4]=="4"){
+        tablica[liczba3][liczba4]="10";
+        score+=100;
+    }
+
+    else if(tablica[liczba3][liczba4]=="5"){
+        tablica[liczba3][liczba4]="11";
+        score+=100;
+    }
+
+    else if(tablica[liczba3][liczba4]=="6"){
+        tablica[liczba3][liczba4]="12";
+        score+=100;
+    }   
+}
+plansza(tablica);
+
+setTimeout(function(){
+    for(let i=0;i<wspolrzedneX.length;i++){
+    liczba3=wspolrzedneX[i];
+    liczba4=wspolrzedneY[i];
+    tablica[liczba3][liczba4]="0";
+  }
+  plansza(tablica);
+  wspolrzedneY=[];
+  wspolrzedneX=[];
+
+  
+},150);   
+
+
+
+if(score>0){    
+    if(score==400){
+        punkty.id="cyfra4";
+        punkty.style.bottom="149px";
+        wirusy.id="cyfra0";
+        wirusy.style.top="41px";
+        wirusy.style.left="575px";
+    }
+    else if(score==300){
+        punkty.id="cyfra3";
+        punkty.style.bottom="149px";
+        wirusy.id="cyfra1";
+        wirusy.style.top="41px";
+        wirusy.style.left="575px";
+    }
+    else if(score==200){
+        punkty.id="cyfra2";
+        punkty.style.bottom="149px";
+        wirusy.id="cyfra2";
+        wirusy.style.top="41px";
+        wirusy.style.left="575px";
+    }
+    else if(score==100){
+        punkty.id="cyfra1";
+        punkty.style.bottom="149px";
+        wirusy.id="cyfra3";
+        wirusy.style.top="41px";
+        wirusy.style.left="575px";
+    }
+    document.getElementById("plansza").appendChild(punkty);
+    document.getElementById("plansza").appendChild(wirusy);
+
+    if(score==400){
+   
+        clearInterval(gra);
+        document.getElementById("plansza").appendChild(wygrana);
+        
+  }
+
+
+}
+console.log("SCORE:",score);
+}
+
+
+function opadanie(){
+
+}
+
+
+
+function plansza(tab){
+  document.getElementById('tabela').innerHTML="";
+  for(var i=0;i<16;i++){
+    var wiersz = document.createElement("tr");
+    for(var j=1;j<9;j++){
+     var pole = document.createElement("td");
+     pole.dataset.x=i;
+     pole.dataset.y=j;  
+     let tymPole=tab[i][j];
+
+        if(tymPole=="1")
+        {
+       pole.style.backgroundImage="url('img/bl_left.png')";
+       }
+        else if(tymPole=="2"){
+        pole.style.backgroundImage="url('img/yl_left.png')";
+      }
+      else if (tymPole=="3"){
+      pole.style.backgroundImage="url('img/br_left.png')";
+      }
+
+      else if (tymPole=="4"){
+      pole.style.backgroundImage="url('img/covid_blue.png')";
+      }
+
+      else if (tymPole=="5"){
+      pole.style.backgroundImage="url('img/covid_yellow.png')";
+      }
+
+      else if (tymPole=="6"){
+      pole.style.backgroundImage="url('img/covid_brown.png')";
+      }
+
+      else if (tymPole=="7"){
+      pole.style.backgroundImage="url('img/bl_o.png')";
+      }
+
+      else if (tymPole=="8"){
+      pole.style.backgroundImage="url('img/yl_o.png')";
+      }
+
+      else if (tymPole=="9"){
+      pole.style.backgroundImage="url('img/br_o.png')";
+      }
+
+      else if (tymPole=="10"){
+      pole.style.backgroundImage="url('img/bl_x.png')";
+      }
+
+      else if (tymPole=="11"){
+      pole.style.backgroundImage="url('img/yl_x.png')";
+      }
+
+      else if (tymPole=="12"){
+      pole.style.backgroundImage="url('img/br_x.png')";
+      }
+
+        wiersz.appendChild(pole);
+        }
+    document.getElementById("tabela").appendChild(wiersz);
+        }
+}
+
+
+function losuj(){
+   
+
+ liczba1 = Math.floor(Math.random()*3+1);
+ liczba2 = Math.floor(Math.random()*3+1);
+ tablica[0][4]=liczba1.toString();
+ tablica[0][5]=liczba2.toString();
+ plansza(tablica);
+}
+
+function losujWirusy(){
+    for(let i=4; i<7;i++){
+    pol1=Math.floor(Math.random()*11+5);
+    pol2=Math.floor(Math.random()*8+1);
+    if(tablica[pol1][pol2]=="4"||tablica[pol1][pol2]=="5"||tablica[pol1][pol2]=="6"){
+    i--;
+    }
+    else{
+        tablica[pol1][pol2]=i.toString();
+        }
+    }
+    for(let i=1; i<2; i++){
+    kolor=Math.floor(Math.random()*3+1);
+    pol1=Math.floor(Math.random()*11+5);
+    pol2=Math.floor(Math.random()*8+1);
+    if(tablica[pol1][pol2]=="5"||tablica[pol1][pol2]=="4"||tablica[pol1][pol2]=="6"){
+    i--;
+    }
+    else{
+        if(kolor==1){
+            tablica[pol1][pol2]="4";
+        }
+        
+        else if(kolor==2){
+            tablica[pol1][pol2]="5";
+        }
+
+        else if(kolor==3){
+            tablica[pol1][pol2]="6";
+        }       
+    }
+    }
+}
+
+
+</script>
+
+
+</body>
+</html>
